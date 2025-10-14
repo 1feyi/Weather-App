@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/additional_info_item.dart';
 import 'package:weather_app/hiddendetails.dart';
 import 'package:weather_app/hourly_forecast_item.dart';
@@ -141,21 +142,25 @@ Future<Map<String,dynamic>> getCurrentWeather() async{
                 ),
                 ),
                 const SizedBox(height: 10,),
-                 SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for(int i = 1; i<=5; i++)
-                      HourlyForecastCard(
-                        time: data['list'][i]['dt_txt'],
-                        temperature: data['list'][i]['main']['temp'].toString(),
-                        icon: data['list'][i]['weather'][0]['main'] == 'Clouds' ? Icons.cloud 
-                        :data['list'][i]['weather'][0]['main'] == 'Rain'? Icons.cloudy_snowing 
-                        :Icons.sunny,
-                      ),
-                    
-                    ],
-                  ),
+                SizedBox(
+                  height: 120,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index){
+                  
+                      final hourlyForecast = data['list'][index];
+                      final hourlyTemp = data['list'][index]['main']['temp'].toString(); 
+                      final hourlySky =  data['list'][index]['weather'][0]['main'];   
+
+                      final time = DateTime.parse(hourlyForecast['dt_txt'].toString());
+                      return HourlyForecastCard(
+                        time: DateFormat.j().format(time), 
+                        temperature: hourlyTemp ,
+                        icon: hourlySky == 'Clouds' ? Icons.cloud : hourlySky == 'Rain' ? Icons.cloudy_snowing :Icons.sunny,
+                        );
+                    },
+                    ),
                 ),
                 // Additional information 
                 const SizedBox(height: 20,),
