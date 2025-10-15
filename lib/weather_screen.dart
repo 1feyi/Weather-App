@@ -57,7 +57,9 @@ Future<Map<String,dynamic>> getCurrentWeather() async{
             padding: const EdgeInsets.all(10.0),
             child: IconButton(
               onPressed: (){
-              print('refresh');
+              setState(() {
+                getCurrentWeather();
+              });;
             }, icon: const Icon(Icons.refresh),
             ),
           )
